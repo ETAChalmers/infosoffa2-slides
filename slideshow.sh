@@ -1,6 +1,6 @@
 while true
 do
-	for file in /home/pi/images/*
+	for file in /home/pi/infosoffa2-slides/images/*
 	do
                 interpreter=${file#*.}
 
