@@ -28,8 +28,8 @@ for i in range(10):
 
     time_left = tisdagsfika - datetime.datetime.now()
 
-    subprocess.run("clear")
-    print("""\
+    out = ""
+    out += """\
 888     888 d8b 888 888            888                888                                               888    d8b                 .d888 d8b 888                .d8888b.
 888     888 Y8P 888 888            888                888                                               888    Y8P                d88P"  Y8P 888               d88P  Y88b 
 888     888     888 888            888                888                                               888                       888        888                    .d88P 
@@ -53,12 +53,14 @@ Y88b   d88P 888 888 888        .d88888 888  888       88888b.   8888b.         .
                                                 888                                       8P                                                         
                                            Y8b d88P                                       "                                                          
                                             "Y88P"                                                                                                   
-""")
+"""
     p = subprocess.Popen(
         ["figlet", "-w", "230"],
         stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
     )
-    p.communicate(("Countdown:\n" + timedelta_format(time_left)).encode())
+    out += p.communicate(("Countdown:\n" + timedelta_format(time_left)).encode())[0].decode()
+    print("\033[2J\033[3J" + out)
     time.sleep(1)
 
 exit(100)
