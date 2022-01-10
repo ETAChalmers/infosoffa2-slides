@@ -1,9 +1,5 @@
-for _ in $(seq 0 10) ; do
-    F=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond' \
-        | jq -rj '.Measurements[-1]')
-
-    clear
-    cat <<'EOF'
+clear
+cat <<'EOF'
  __      __  _   _                    __                 _                                                    _   _             __   _   _            _     _   _   _    __   _   _   _   _          _   
  \ \    / / (_) (_)                  / _|               | |                                                  (_) (_)           / _| (_) (_)          | |   (_) | | | |  / _| (_) (_) | | | |        | |  
   \ \  / /    __ _    __ _    __ _  | |_   _ __    ___  | | __ __   __   ___   _ __    ___    ___   _ __       __ _   _ __    | |_    ___    _ __    | |_   _  | | | | | |_    __ _  | | | |   ___  | |_ 
@@ -14,7 +10,14 @@ for _ in $(seq 0 10) ; do
                      |___/   |___/
 EOF
 
-    printf '%.4f Hz' "$F" | figlet -w 230
+for _ in $(seq 0 10) ; do
+    F=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond' \
+        | jq -rj '.Measurements[-1]')
+
+    (
+        printf "\x1b[8;1H"
+        printf '%.4f Hz' "$F" | figlet -w 230
+    )
     sleep 1
 done
 
