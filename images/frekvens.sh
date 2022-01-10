@@ -1,4 +1,4 @@
-for _ in {0..10} ; do
+for _ in $(seq 0 10) ; do
     F=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond' \
         | jq -rj '.Measurements[-1]')
 
