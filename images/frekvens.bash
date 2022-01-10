@@ -10,14 +10,12 @@ cat <<'EOF'
                      |___/   |___/
 EOF
 
-for _ in $(seq 0 10) ; do
+for i in $(seq 0 10) ; do
     F=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond' \
         | jq -rj '.Measurements[-1]')
 
-    (
-        printf "\x1b[8;1H"
-        printf '%.4f Hz' "$F" | figlet -w 230
-    )
+    printf "\x1b[8;1H"
+    printf "%.4f Hz    \x00" "$F" | figlet -w 230
     sleep 1
 done
 
