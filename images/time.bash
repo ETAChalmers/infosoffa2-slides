@@ -14,3 +14,4 @@ for _ in $(seq 0 10) ; do
     sleep 1
 done
 
+exit 100
