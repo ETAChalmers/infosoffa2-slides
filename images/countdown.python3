@@ -60,7 +60,7 @@ Y88b   d88P 888 888 888        .d88888 888  888       88888b.   8888b.         .
         stdout=subprocess.PIPE,
     )
     out += p.communicate(("Countdown:\n" + timedelta_format(time_left)).encode())[0].decode()
-    print("\033[2J\033[3J" + out)
+    print("\033[H\033[3J" + out)
     time.sleep(1)
 
 exit(100)
