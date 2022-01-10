@@ -47,7 +47,7 @@ def timedelta_format(duration):
 
     return result
 
-for i in range(10):
+for i in range(20):
     tuesday = datetime.datetime.now()
     while tuesday.weekday() != 1:
         tuesday = tuesday + datetime.timedelta(days=1)
@@ -65,6 +65,6 @@ for i in range(10):
     out = "\n".join("\033[K" + line for line in out.split("\n"))
     sys.stdout.write("\033[30;1H" + out)
     sys.stdout.flush()
-    time.sleep(1)
+    time.sleep(0.5)
 
 exit(100)
