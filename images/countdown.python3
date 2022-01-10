@@ -1,0 +1,64 @@
+import datetime
+import time
+
+import subprocess
+
+def timedelta_format(duration):
+    seconds = duration.total_seconds()
+
+    hours, seconds = divmod(round(seconds), 3600)
+    minutes, seconds = divmod(seconds, 60)
+
+    result = ""
+    if hours:
+        result += f"{hours} {'timmar' if hours > 1 else 'timme'}, "
+    if minutes:
+        result += f"{minutes} {'minuter' if minutes > 1 else 'minut'} och "
+
+    result += f"{seconds} {'sekunder' if seconds > 1 else 'sekund'}"
+
+    return result
+
+for i in range(10):
+    tuesday = datetime.datetime.now()
+    while tuesday.weekday() != 1:
+        tuesday = tuesday + datetime.timedelta(days=1)
+
+    tisdagsfika = datetime.datetime.replace(tuesday, hour=17, minute=30, second=0, microsecond=0)
+
+    time_left = tisdagsfika - datetime.datetime.now()
+
+    subprocess.run("clear")
+    print("""\
+888     888 d8b 888 888            888                888                                               888    d8b                 .d888 d8b 888                .d8888b.
+888     888 Y8P 888 888            888                888                                               888    Y8P                d88P"  Y8P 888               d88P  Y88b 
+888     888     888 888            888                888                                               888                       888        888                    .d88P 
+Y88b   d88P 888 888 888        .d88888 888  888       88888b.   8888b.         .d88b.  888d888  8888b.  888888 888 .d8888b        888888 888 888  888  8888b.     .d88P"  
+ Y88b d88P  888 888 888       d88" 888 888  888       888 "88b     "88b       d88P"88b 888P"       "88b 888    888 88K            888    888 888 .88P     "88b    888"    
+  Y88o88P   888 888 888       888  888 888  888       888  888 .d888888       888  888 888     .d888888 888    888 "Y8888b.       888    888 888888K  .d888888    888     
+   Y888P    888 888 888       Y88b 888 Y88b 888       888  888 888  888       Y88b 888 888     888  888 Y88b.  888      X88       888    888 888 "88b 888  888            
+    Y8P     888 888 888        "Y88888  "Y88888       888  888 "Y888888        "Y88888 888     "Y888888  "Y888 888  88888P'       888    888 888  888 "Y888888    888     
+                                                                                   888                                                                                    
+                                                                              Y8b d88P                                                                                    
+                                                                               "Y88P"                                                                                     
+
+88888888888 d8b               888                             .d888 d8b 888                          d888   8888888888      .d8888b.   .d8888b.  888 
+    888     Y8P               888                            d88P"  Y8P 888                         d8888         d88P     d88P  Y88b d88P  Y88b 888 
+    888                       888                            888        888                           888        d88P           .d88P 888    888 888 
+    888     888 .d8888b   .d88888  8888b.   .d88b.  .d8888b  888888 888 888  888  8888b.              888       d88P   d8b     8888"  888    888 888 
+    888     888 88K      d88" 888     "88b d88P"88b 88K      888    888 888 .88P     "88b             888    88888888  Y8P      "Y8b. 888    888 888 
+    888     888 "Y8888b. 888  888 .d888888 888  888 "Y8888b. 888    888 888888K  .d888888             888     d88P         888    888 888    888 Y8P 
+    888     888      X88 Y88b 888 888  888 Y88b 888      X88 888    888 888 "88b 888  888 d8b         888    d88P      d8b Y88b  d88P Y88b  d88P  "  
+    888     888  88888P'  "Y88888 "Y888888  "Y88888  88888P' 888    888 888  888 "Y888888 88P       8888888 d88P       Y8P  "Y8888P"   "Y8888P"  888 
+                                                888                                       8P                                                         
+                                           Y8b d88P                                       "                                                          
+                                            "Y88P"                                                                                                   
+""")
+    p = subprocess.Popen(
+        ["figlet", "-w", "230"],
+        stdin=subprocess.PIPE,
+    )
+    p.communicate(("Countdown:\n" + timedelta_format(time_left)).encode())
+    time.sleep(1)
+
+exit(100)
