@@ -1,8 +1,8 @@
 #!/bin/bash
 
-curl http://wd.cfab.chalmers.se/pages/station/liveData.php --silent --output data_curl.html
-file=$(echo "cat //html/body/div/div/table/tr/td/div" |  xmllint --html --shell data_curl.html)
-rm -f data_curl.html
+curl http://wd.cfab.chalmers.se/pages/station/liveData.php --silent --output ~/infosoffa2-slides/data_curl.html
+file=$(echo "cat //html/body/div/div/table/tr/td/div" |  xmllint --html --shell ~/infosoffa2-slides/data_curl.html)
+rm -f ~/infosoffa2-slides/data_curl.html
 
 #MMmMMmm RegEx
 re='([0-9.]+)([^0-9]*)([0-9.]+)([^0-9]*)([0-9.]+)([^0-9]*)([0-9.]+)([^0-9]*)([0-9.]+)([^0-9]*)([0-9.]+)([^0-9]*)([0-9.]+)([^0-9]*)'
