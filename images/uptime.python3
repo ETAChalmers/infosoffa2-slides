@@ -1,0 +1,71 @@
+import datetime
+import time
+import sys
+from pathlib import Path
+
+import subprocess
+
+print(
+    """\
+\033[H\033[2J\
+ .d8888b.  888 d8b      888                   888                                                        
+d88P  Y88b 888 Y8P      888                   888                                                        
+Y88b.      888          888                   888                                                        
+ "Y888b.   888 888  .d88888  .d88b.  .d8888b  88888b.   .d88b.  888  888  888  .d88b.  88888b.  .d8888b  
+    "Y88b. 888 888 d88" 888 d8P  Y8b 88K      888 "88b d88""88b 888  888  888 d8P  Y8b 888 "88b 88K      
+      "888 888 888 888  888 88888888 "Y8888b. 888  888 888  888 888  888  888 88888888 888  888 "Y8888b. 
+Y88b  d88P 888 888 Y88b 888 Y8b.          X88 888  888 Y88..88P Y88b 888 d88P Y8b.     888  888      X88 
+ "Y8888P"  888 888  "Y88888  "Y8888   88888P' 888  888  "Y88P"   "Y8888888P"   "Y8888  888  888  88888P' 
+                                                                                                         
+                                                                                                         
+                                                                                                         
+                  888    d8b                                                                             
+                  888    Y8P                                                                             
+                  888                                                                                    
+888  888 88888b.  888888 888 88888b.d88b.   .d88b.  d8b                                                  
+888  888 888 "88b 888    888 888 "888 "88b d8P  Y8b Y8P                                                  
+888  888 888  888 888    888 888  888  888 88888888                                                      
+Y88b 888 888 d88P Y88b.  888 888  888  888 Y8b.     d8b                                                  
+ "Y88888 88888P"   "Y888 888 888  888  888  "Y8888  Y8P                                                  
+         888                                                                                             
+         888                                                                                             
+         888                                                                                             
+"""
+)
+
+
+def timedelta_format(duration):
+    seconds = duration.total_seconds()
+
+    hours, seconds = divmod(round(seconds), 3600)
+    minutes, seconds = divmod(seconds, 60)
+
+    result = ""
+    if hours:
+        result += f"{hours} {'timmar' if hours > 1 else 'timme'}, "
+    if minutes:
+        result += f"{minutes} {'minuter' if minutes > 1 else 'minut'} och "
+
+    result += f"{seconds} {'sekunder' if seconds > 1 else 'sekund'}"
+
+    return result
+
+
+for i in range(20):
+
+    uptime = datetime.timedelta(
+        seconds=int(Path("/proc/uptime").read_text().split(".")[0])
+    )
+
+    p = subprocess.Popen(
+        ["figlet", "-w", "230"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+    )
+    out = p.communicate((timedelta_format(uptime)).encode())[0].decode()
+    out = "\n".join("\033[K" + line for line in out.split("\n"))
+    sys.stdout.write("\033[30;1H" + out)
+    sys.stdout.flush()
+    time.sleep(0.5)
+
+exit(100)
