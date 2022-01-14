@@ -12,7 +12,7 @@ do
 
 		if [ $(($RANDOM%100)) -lt 1 ]
                 then
-			$interpreter "$file" | better_lolcat/a.out
+			$interpreter "$file" | /home/pi/infosoffa2-slides/better_lolcat/a.out
 			exit_code=$?
 		else
 			$interpreter "$file"
