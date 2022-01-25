@@ -1,4 +1,4 @@
-for frame in ../3dlogo/frame*
+for frame in infosoffa2-slides/3dlogo/frame*
 do
 cat $frame
 sleep 0.5
