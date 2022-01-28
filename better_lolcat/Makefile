@@ -1,7 +1,7 @@
 all : ArgumentParser.o rainbow
 
 CPP = g++
-CPPOPTS = -g
+CPPOPTS = -O
 
 ArgumentParser.o : ArgumentParser.cpp
 	$(CPP) -c ArgumentParser.cpp -o ArgumentParser.o $(CPPOPTS)
