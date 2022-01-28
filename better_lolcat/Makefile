@@ -10,4 +10,4 @@ rainbow : rainbow.cpp ArgumentParser.o
 	$(CPP) -o rainbow rainbow.cpp ArgumentParser.o $(CPPOPTS)
 
 clean :
-	rm *.o
+	rm *.o rainbow
