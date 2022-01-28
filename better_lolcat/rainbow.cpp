@@ -1,10 +1,10 @@
-# include <stdlib.h>
-# include <iostream>
-# include <fstream>
-# include <vector>
-# include <cmath>
-# include <string>
-# include "ArgumentParser.cpp"
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cmath>
+#include <string>
+#include "ArgumentParser.hpp"
 
 /*
  * Rainbow - A lolcat clone / extension, written in C++
@@ -128,12 +128,68 @@ int main(int argc, char** argv) {
     int y = 0;
     std::string last_escape_code = "";
 
+    enum {
+        ST_None,
+        ST_AfterEsc,
+        ST_InParam,
+        ST_InIntermediate,
+    } escape_state = ST_None;
+
     for (char ch; (*inputStream) >> ch; ) {
+        switch (escape_state) {
+        case ST_None:
+            break;
+        case ST_AfterEsc:
+            if (ch == '[') {
+                std::cout << ch;
+                escape_state = ST_InParam;
+                continue;
+            }
+            escape_state = ST_None;
+            break;
+        case ST_InParam:
+            if (0x30 <= ch && ch < 0x40) {
+                std::cout << ch;
+                continue;
+            }
+            if (0x20 <= ch && ch < 0x30) {
+                escape_state = ST_InIntermediate;
+                std::cout << ch;
+                continue;
+            }
+            if (0x40 <= ch && ch < 0x7f) {
+                escape_state = ST_None;
+                std::cout << ch;
+                continue;
+            }
+            escape_state = ST_None;
+            break;
+        case ST_InIntermediate:
+            if (0x20 <= ch && ch < 0x30) {
+                std::cout << ch;
+                continue;
+            }
+            if (0x40 <= ch && ch < 0x7f) {
+                escape_state = ST_None;
+                std::cout << ch;
+                continue;
+            }
+            escape_state = ST_None;
+            break;
+        }
+
         if (ch == '\n') {
             y++;
             x = 0;
             std::cout << "\033[0m" << std::endl;
             last_escape_code = "";
+            continue;
+        }
+        else if (ch < 32) {
+            std::cout << ch;
+            if (ch == 0x1b) {
+                escape_state = ST_AfterEsc;
+            }
             continue;
         }
         else
