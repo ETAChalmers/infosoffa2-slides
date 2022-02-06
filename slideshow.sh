@@ -1,7 +1,7 @@
 clear
 while true
 do
-	for file in /home/pi/infosoffa2-slides/images/* | shuf
+	for file in $(ls /home/pi/infosoffa2-slides/images | shuf)
 	do
                 interpreter=${file#*.}
 
