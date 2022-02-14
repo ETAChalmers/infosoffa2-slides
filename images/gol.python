@@ -1,0 +1,50 @@
+import time
+import random
+
+WIDTH = 240//2
+HEIGHT = 66
+
+grid = [[random.random() < 0.1 for w in range(WIDTH)] for h in range(HEIGHT)]
+
+start = time.time()
+
+while time.time() - start < 10:
+    out = "\033[1;1H"
+
+    last_code = None
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            if grid[y][x]:
+                code = "\033[48;5;255m"
+            else:
+                code = "\033[48;5;232m"
+            if code != last_code:
+                out += code
+                last_code = code
+            out += "  "
+        out += "\033[0m|\n"
+        last_code = None
+    print(out)
+
+    new_grid = [[0 for w in range(WIDTH)] for h in range(HEIGHT)]
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            around = 0
+            for dy in [-1, 0, 1]:
+                y_ = y + dy
+                if y_ < 0 or y_ >= HEIGHT:
+                    continue
+                for dx in [-1, 0, 1]:
+                    if dy == dx == 0:
+                        continue
+                    x_ = x + dx
+                    if x_ < 0 or x_ >= HEIGHT:
+                        continue
+                    around += grid[y_][x_]
+            if grid[y][x]:
+                new_grid[y][x] = around in [2, 3]
+            else:
+                new_grid[y][x] = around in [3]
+    grid = new_grid
+
+    time.sleep(0.1)
