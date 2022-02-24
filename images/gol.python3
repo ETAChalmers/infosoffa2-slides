@@ -41,7 +41,7 @@ while time.time() - start < 10:
                     if dy == dx == 0:
                         continue
                     x_ = x + dx
-                    if x_ < 0 or x_ >= HEIGHT:
+                    if x_ < 0 or x_ >= WIDTH:
                         continue
                     around += grid[y_][x_]
             if grid[y][x]:
