@@ -1,0 +1,17 @@
+
+WIDTH = 230//12
+HEIGHT = 66
+
+for i in range (HEIGHT//2):
+	for i in range(WIDTH):
+		print("\x1b[38;5;12m\x1b[1mSlavaUkraini",end="")
+	print("\x1b[0m")
+for i in range (HEIGHT//2):
+	for i in range(WIDTH):
+		print("\x1b[38;5;11m\x1b[1mSlavaUkraini",end="")
+	print("\x1b[0m")
+		
+
+
+
+
