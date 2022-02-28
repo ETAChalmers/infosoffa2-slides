@@ -1,7 +1,18 @@
 clear
+
+WIDTH=$(tput cols)
+HEIGHT=$(tput lines)
+
+IMAGE_PATH="/home/pi/infosoffa2-slides/images"
+# IMAGE_PATH="$(pwd)/images"
+
 while true
 do
-	for file in $(echo /home/pi/infosoffa2-slides/images/* | shuf)
+    IDX=1
+    # TODO: fillistan splitas vid mellanslag, borde ha ett bättre sätt
+    count=$(echo $IMAGE_PATH/* | wc -w | tr -d ' ')
+
+	for file in $(echo $IMAGE_PATH/* | shuf)
 	do
                 interpreter=${file#*.}
 
@@ -9,6 +20,14 @@ do
 		then
 			interpreter=cat
 		fi
+
+        bar=$(yes "#" | head -n $IDX | tr -d '\n' ; yes "." | head -n $(($count-$IDX+1)) | tr -d '\n')
+        bottom_text="$(basename $file) - [ $bar ] "
+
+        w=$(echo "$bottom_text" | wc -c)
+        x=$((WIDTH-w))
+
+        printf "\x1b[$HEIGHT;${x}H$bottom_text\x1b[1;1H"
 
 		if [ $(($RANDOM%100)) -lt 1 ]
                 then
@@ -23,5 +42,7 @@ do
 			sleep 10
 		fi
 		clear
+
+		IDX=$((IDX+1))
 	done
 done
