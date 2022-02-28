@@ -51,3 +51,5 @@ while time.time() - start < 10:
     grid = new_grid
 
     time.sleep(0.1)
+
+exit(100)
