@@ -12,7 +12,7 @@ do
     # TODO: fillistan splitas vid mellanslag, borde ha ett bättre sätt
     count=$(echo $IMAGE_PATH/* | wc -w | tr -d ' ')
 
-	for file in $(echo $IMAGE_PATH/* | shuf)
+	for file in $(ls $IMAGE_PATH/* | shuf)
 	do
                 interpreter=${file#*.}
 
