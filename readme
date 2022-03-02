@@ -5,4 +5,6 @@ vill du göra dynamisk kod som visas?
 döp din fil till .program, så kommer `program <dinfil>` köras. till exempel skulle `hello.bash` köras som `bash hello.bash`.
 ifall du vill sköta sleeping själv och inte ha en 5s delay efter ditt program körs, exita med status code 100.
 
+slideshow-motorn clearar skärmen automatiskt åt dig, lägg ingen `clear` i ditt skript!
+
 ** viktigt! ** inga mellanslag i slidenamnen!
