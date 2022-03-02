@@ -19,7 +19,6 @@ if [[ $file =~ $re ]];
         sun="${BASH_REMATCH[13]}"
 
 fi
-clear
 echo '888     888 d8b  d8b      888                  888             d8b                   888'
 echo '888     888 Y8P  Y8P      888                  888             Y8P                   888'
 echo '888     888               888                  888                                   888'

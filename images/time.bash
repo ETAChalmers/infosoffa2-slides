@@ -1,4 +1,3 @@
-clear
 echo '888    d8P  888                   888                              d8b  d8b'
 echo '888   d8P   888                   888                              Y8P  Y8P'
 echo '888  d8P    888                   888'
