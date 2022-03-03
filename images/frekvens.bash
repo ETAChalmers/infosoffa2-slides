@@ -13,7 +13,7 @@ ndata=$(echo "$data" | jq '.Measurements | length')
 
 extra_points=10
 y0=14
-x0=10
+x0=20
 h=50
 w=$(($ndata+$extra_points))
 
@@ -30,23 +30,21 @@ function move_to_graph {
 
 draw_start=0
 
-min=$(echo "$mid-($h/2)*$hertz_per_px" | bc)
+min=$(echo "$mid-($h/2)*$hertz_per_px" | bc | tr -d '\n' ; printf "Hz")
 min_l=$(echo "$min" | wc -c | tr -d ' ')
-max=$(echo "$mid+($h/2)*$hertz_per_px" | bc)
+max=$(echo "$mid+($h/2)*$hertz_per_px" | bc | tr -d '\n' ; printf "Hz")
 max_l=$(echo "$max" | wc -c | tr -d ' ')
-mmid=$(echo "$mid" | bc)
+mmid=$(printf "%dHz" $mid)
 mmid_l=$(echo "$mmid" | wc -c | tr -d ' ')
 
 move_to_xy $((-$min_l-1)) 0
-printf "$min "
+printf "$min"
 move_to_xy $((-$max_l-1)) $h
-printf "$max "
-move_to_xy $((-$mmid_l-1)) $h
-printf "$mmid "
+printf "$max"
 
 max=$(echo "$mid+($h/2)*$hertz_per_px" | bc)
-move_to_xy $((-$max_l-1)) $(($h/2))
-printf "$mid "
+move_to_xy $((-$mmid_l-1)) $(($h/2))
+printf "$mmid "
 
 for y in $(seq 1 $(($h-1))) ; do
     move_to_graph -1 $y
@@ -60,6 +58,9 @@ for x in $(seq 0 $(($w-1))) ; do
     printf '%s' '--'
     move_to_graph $x $h
     printf '%s' '--'
+
+    move_to_graph $x $(($h/2))
+    printf '%s' '**'
 done
 
 # takes x point, y value
