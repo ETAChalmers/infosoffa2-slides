@@ -21,7 +21,7 @@ mid=50 # Hz
 hertz_per_px=0.001
 
 function move_to_xy {
-    printf "\x1b[$(($2+$y0));$(($1+$x0))H"
+    printf "\x1b[$(($h-$2+$y0));$(($1+$x0))H"
 
 }
 function move_to_graph {
