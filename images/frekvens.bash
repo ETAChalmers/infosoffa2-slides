@@ -46,7 +46,7 @@ max=$(echo "$mid+($h/2)*$hertz_per_px" | bc)
 move_to_xy $((-$mmid_l-1)) $(($h/2))
 printf "$mmid "
 
-for y in $(seq 1 $(($h-1))) ; do
+for y in $(seq 0 $h) ; do
     move_to_graph -1 $y
     printf ' |'
     move_to_graph $w $y
@@ -60,16 +60,28 @@ for x in $(seq 0 $(($w-1))) ; do
     printf '%s' '--'
 
     move_to_graph $x $(($h/2))
-    printf '%s' '**'
+    printf '%s' ' -'
 done
 
+
+last_y="NULL"
 # takes x point, y value
 function put_point {
     y=$(echo "scale=5;$h/2+($2-$mid)/$hertz_per_px" | bc)
     yi=$(echo "$y" | awk '{print int($1+0.5)}')
 
+    if [[ "$last_y" = "NULL" ]] ; then
+        syi="$yi"
+    else
+        sy=$(echo "scale=5;($last_y+$h/2+($2-$mid)/$hertz_per_px)/2" | bc)
+        syi=$(echo "$sy" | awk '{print int($1+0.5)}')
+    fi
+
     move_to_graph "$1" $yi
-    printf "##"
+    printf " #"
+    move_to_graph "$1" $syi
+    printf "#"
+    last_y="$yi"
 }
 
 px=0
@@ -85,7 +97,7 @@ for x in $(seq 1 $extra_points) ; do
     F=$(echo "$data" | jq -rj '.Measurements[-1]')
 
     printf "\x1b[8;1H"
-    printf "%.4f Hz    \x00" "$F" | figlet -w 230
+    printf "                                                 %.4f Hz    \x00" "$F" | figlet -w 230
 
     put_point $px "$F"
     px=$((px+1))
