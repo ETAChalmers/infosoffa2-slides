@@ -7,12 +7,88 @@ echo '     \/      \__,_|  \__, |  \__, | |_|   |_|     \___| |_|\_\   \_/    \_
 echo '                      __/ |   __/ |                                                                                                                                                                      '
 echo '                     |___/   |___/'
 
-for i in $(seq 0 10) ; do
-    F=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond' \
-        | jq -rj '.Measurements[-1]')
+data=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond')
+
+ndata=$(echo "$data" | jq '.Measurements | length')
+
+extra_points=10
+y0=14
+x0=10
+h=50
+w=$(($ndata+$extra_points))
+
+mid=50 # Hz
+hertz_per_px=0.001
+
+function move_to_xy {
+    printf "\x1b[$(($2+$y0));$(($1+$x0))H"
+
+}
+function move_to_graph {
+    move_to_xy $((2*$1)) $2
+}
+
+draw_start=0
+
+min=$(echo "$mid-($h/2)*$hertz_per_px" | bc)
+min_l=$(echo "$min" | wc -c | tr -d ' ')
+max=$(echo "$mid+($h/2)*$hertz_per_px" | bc)
+max_l=$(echo "$max" | wc -c | tr -d ' ')
+mmid=$(echo "$mid" | bc)
+mmid_l=$(echo "$mmid" | wc -c | tr -d ' ')
+
+move_to_xy $((-$min_l-1)) 0
+printf "$min "
+move_to_xy $((-$max_l-1)) $h
+printf "$max "
+move_to_xy $((-$mmid_l-1)) $h
+printf "$mmid "
+
+max=$(echo "$mid+($h/2)*$hertz_per_px" | bc)
+move_to_xy $((-$max_l-1)) $(($h/2))
+printf "$mid "
+
+for y in $(seq 1 $(($h-1))) ; do
+    move_to_graph -1 $y
+    printf ' |'
+    move_to_graph $w $y
+    printf '|'
+done
+
+for x in $(seq 0 $(($w-1))) ; do
+    move_to_graph $x 0
+    printf '%s' '--'
+    move_to_graph $x $h
+    printf '%s' '--'
+done
+
+# takes x point, y value
+function put_point {
+    y=$(echo "scale=5;$h/2+($2-$mid)/$hertz_per_px" | bc)
+    yi=$(echo "$y" | awk '{print int($1+0.5)}')
+
+    move_to_graph "$1" $yi
+    printf "##"
+}
+
+px=0
+for point in $(echo "$data" | jq '.Measurements | .[]') ; do
+    put_point $px "$point"
+    px=$((px+1))
+done
+
+for x in $(seq 1 $extra_points) ; do
+    if [[ $x -ne 0 ]] ; then
+        data=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond')
+    fi
+    F=$(echo "$data" | jq -rj '.Measurements[-1]')
 
     printf "\x1b[8;1H"
     printf "%.4f Hz    \x00" "$F" | figlet -w 230
+
+    put_point $px "$F"
+    px=$((px+1))
+
     sleep 1
 done
 
