@@ -1,0 +1,8 @@
+width = 1920
+height = 1080
+
+with open("/dev/fb0", "wb") as fb0:
+    for y in range(height):
+        for x in range(width):
+            fb0.write(b'\xff\x00\x00')
+    fb0.flush()
