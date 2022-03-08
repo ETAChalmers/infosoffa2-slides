@@ -6,7 +6,7 @@ with open("/dev/fb0", "wb") as fb0:
     for y in range(height):
         out = b''
         for x in range(width):
-            out += b'\xff\x00\x00'
+            out += b'\xff'
 
         fb0.write(out)
         fb0.flush()
