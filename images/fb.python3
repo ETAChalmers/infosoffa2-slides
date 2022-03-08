@@ -3,7 +3,7 @@ height = 1080
 
 
 with open("/dev/fb0", "wb") as fb0:
-    line = bytearray(width)
+    line = bytearray(4 * width)
     for y in range(height):
         for x in range(width):
             line[4 * x] = 0xff
