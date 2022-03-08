@@ -14,3 +14,6 @@ for i in range (HEIGHT//2):
 	print("\x1b[0m")
 		
 time.sleep(6.9)
+
+
+exit(100)
