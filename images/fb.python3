@@ -1,17 +1,12 @@
-import mmap
-
 width = 1920
 height = 1080
 
-with open("/dev/fb0", "w+b") as fb0:
-    mapped = mmap.mmap(fb0.fileno(), 0)
-    fb0.flush()
 
-
+with open("/dev/fb0", "wb") as fb0:
     for y in range(height):
+        out = b''
         for x in range(width):
-            mapped[3 * (y * width + x)] = 0x00
-            mapped[3 * (y * width + x) + 1] = 0xff
-            mapped[3 * (y * width + x) + 2] = 0x99
+            out += b'\xff'
 
-    fb0.flush()
+        fb0.write(out)
+        fb0.flush()
