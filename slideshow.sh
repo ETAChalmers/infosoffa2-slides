@@ -36,7 +36,7 @@ do
 
         printf "\x1b[$HEIGHT;${x}H$bottom_text\x1b[1;1H"
 
-		if [ $(($RANDOM%1)) -lt 1 ]
+		if [ $(($RANDOM%69)) -lt 1 ]
                 then
 			$interpreter "$file" | /home/pi/infosoffa2-slides/better_lolcat/rainbow
 			exit_code=$?

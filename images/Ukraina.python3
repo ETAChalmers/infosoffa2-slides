@@ -1,3 +1,5 @@
+import time
+
 
 WIDTH = 230//12
 HEIGHT = 66
@@ -11,7 +13,4 @@ for i in range (HEIGHT//2):
 		print("\x1b[38;5;11m\x1b[1mSlavaUkraini",end="")
 	print("\x1b[0m")
 		
-
-
-
-
+time.sleep(6.9)
