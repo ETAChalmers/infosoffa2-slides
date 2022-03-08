@@ -6,9 +6,12 @@ with open("/dev/fb0", "wb") as fb0:
     line = bytearray(4 * width)
     for y in range(height):
         for x in range(width):
-            line[4 * x] = 0xff
-            line[4 * x + 1] = 0x00
-            line[4 * x + 2] = int((255 * x) / width)
+            c = int((255 * x) / width)
+
+            line[4 * x] = c
+            line[4 * x + 1] = 1 - c
+            line[4 * x + 2] = c
+            line[4 * x + 3] = 0
 
         fb0.write(line)
         fb0.flush()
