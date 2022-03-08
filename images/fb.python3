@@ -9,7 +9,7 @@ with open("/dev/fb0", "wb") as fb0:
 
             line[4 * x] = x % 256
             line[4 * x + 1] = x % 256
-            line[4 * x + 2] = y % 256
+            line[4 * x + 2] = x % 256
             line[4 * x + 3] = 0
 
         fb0.write(line)
