@@ -9,9 +9,9 @@ with open("/dev/fb0", "wb") as fb0:
             c = int((255 * x) / width)
 
             line[4 * x] = c
-            line[4 * x + 1] = 255 - c
+            line[4 * x + 1] = c
             line[4 * x + 2] = c
-            line[4 * x + 3] = 255
+            line[4 * x + 3] = 0
 
         fb0.write(line)
         fb0.flush()
