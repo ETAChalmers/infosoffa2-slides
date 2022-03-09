@@ -57,12 +57,14 @@ for i in range(20):
         seconds=int(Path("/proc/uptime").read_text().split(".")[0])
     )
 
+    temp_str, _ = subprocess.Popen(["vcgencmd", "measure_temp"], stdout=subprocess.PIPE).communicate()
+
     p = subprocess.Popen(
         ["figlet", "-w", "230"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
     )
-    out = p.communicate((timedelta_format(uptime)).encode())[0].decode()
+    out = p.communicate((timedelta_format(uptime)).encode() + b"\n" + temp_str)[0].decode()
     out = "\n".join("\033[K" + line for line in out.split("\n"))
     sys.stdout.write("\033[30;1H" + out)
     sys.stdout.flush()
