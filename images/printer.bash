@@ -12,9 +12,9 @@ minutes=$(($time_left/60%60))
 hours=$(($time_left/60/60%60))
 
 if [[ hours -eq 0 ]] ; then
-    timedesc="$minutes m"
+    timedesc="${minutes}m"
 else
-    timedesc="$hours h $minutes m"
+    timedesc="${hours}h ${minutes}m"
 fi
 
 progress_desc="Progress: $progress%, $timedesc left"
