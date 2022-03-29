@@ -1,6 +1,5 @@
-QUOTE_PATH="infosoffa2-slides/quotes.json"
-# QUOTE_PATH="../quotes.json"
+URL="https://coral.shoes/morse-trainer/data/quotes.json"
 
-QUOTE=$(jq -r '.[] | .quote + "\\n - " + .author' $QUOTE_PATH | shuf -n 1)
+QUOTE=$(curl -s "$URL" | jq -r '.[] | .quote + "\\n - " + .author' $QUOTE_PATH | shuf -n 1)
 
 echo "$QUOTE" | figlet -w $(tput cols)
