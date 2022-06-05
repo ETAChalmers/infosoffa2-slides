@@ -36,7 +36,13 @@ do
 
         printf "\x1b[$HEIGHT;${x}H$bottom_text\x1b[1;1H"
 
-		if [ $(($RANDOM%2)) -lt 1 ]
+        RAINBOW_CHANCE=69
+        # is pride month?
+        if date | grep 'Jun' 1>/dev/null ; then
+            RAINBOW_CHANCE=2
+        fi
+
+		if [ $(($RANDOM%$RAINBOW_CHANCE)) -lt 1 ]
                 then
 			$interpreter "$file" | /home/pi/infosoffa2-slides/better_lolcat/rainbow
 			exit_code=$?
