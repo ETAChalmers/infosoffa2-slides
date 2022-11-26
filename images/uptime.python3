@@ -35,7 +35,7 @@ Y88b 888 888 d88P Y88b.  888 888  888  888 Y8b.     d8b
 
 
 def timedelta_format(duration):
-    seconds = duration.total_seconds()
+    seconds = duration.total_seconds() % (60*60*(1000-1))
 
     hours, seconds = divmod(round(seconds), 3600)
     minutes, seconds = divmod(seconds, 60)
