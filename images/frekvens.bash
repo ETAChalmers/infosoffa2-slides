@@ -7,6 +7,7 @@ echo '     \/      \__,_|  \__, |  \__, | |_|   |_|     \___| |_|\_\   \_/    \_
 echo '                      __/ |   __/ |                                                                                                                                                                      '
 echo '                     |___/   |___/'
 
+
 data=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond')
 
 ndata=$(echo "$data" | jq '.Measurements | length')
@@ -17,8 +18,19 @@ x0=20
 h=50
 w=$(($ndata+$extra_points))
 
-mid=50 # Hz
-hertz_per_px=0.001
+if [[ $(($RANDOM%2)) -eq 1 ]] ; then
+    # Hz
+    CONVERSION=1.0
+    UNIT="Hz"
+    mid=50
+    hertz_per_px=0.001
+else
+    # rad/s
+    CONVERSION=$(echo "2*3.141592" | bc)
+    UNIT="rad/s"
+    mid=313
+    hertz_per_px=$(echo "0.313*0.313" | bc)
+fi
 
 function move_to_xy {
     printf "\x1b[$(($h-$2+$y0));$(($1+$x0))H"
@@ -30,11 +42,11 @@ function move_to_graph {
 
 draw_start=0
 
-min=$(echo "$mid-($h/2)*$hertz_per_px" | bc | tr -d '\n' ; printf "Hz")
+min=$(echo "$mid-($h/2)*$hertz_per_px" | bc | tr -d '\n' ; printf "$UNIT")
 min_l=$(echo "$min" | wc -c | tr -d ' ')
-max=$(echo "$mid+($h/2)*$hertz_per_px" | bc | tr -d '\n' ; printf "Hz")
+max=$(echo "$mid+($h/2)*$hertz_per_px" | bc | tr -d '\n' ; printf "$UNIT")
 max_l=$(echo "$max" | wc -c | tr -d ' ')
-mmid=$(printf "%dHz" $mid)
+mmid=$(printf "%d$UNIT" $mid)
 mmid_l=$(echo "$mmid" | wc -c | tr -d ' ')
 
 move_to_xy $((-$min_l-1)) 0
@@ -86,6 +98,7 @@ function put_point {
 
 px=0
 for point in $(echo "$data" | jq '.Measurements | .[]') ; do
+    point=$(echo "$point*$CONVERSION" | bc)
     put_point $px "$point"
     px=$((px+1))
 done
@@ -95,9 +108,10 @@ for x in $(seq 1 $extra_points) ; do
         data=$(curl -s -X GET --header 'Accept: application/json' 'https://driftsdata.statnett.no/RestApi/Frequency/BySecond')
     fi
     F=$(echo "$data" | jq -rj '.Measurements[-1]')
+    F=$(echo "$F*$CONVERSION" | bc)
 
     printf "\x1b[8;1H"
-    printf "                                                 %.4f Hz    \x00" "$F" | figlet -w 230
+    printf "                                                 %.4f $UNIT    \x00" "$F" | figlet -w 230
 
     put_point $px "$F"
     px=$((px+1))
