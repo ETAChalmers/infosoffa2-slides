@@ -47,12 +47,12 @@ curl -u "$LOGIN" --digest -s "$PRINTER_IP$icon_url" > /tillfälligt/print.png
 
 echo "rendering image"
 
-basepath=$(dirname "$0")
+basepath=$(dirname $(dirname "$0"))
 
 convert -font Courier -size 1920x1080 -background black -fill white canvas:none \
     -pointsize 30 \
     -draw "text 50,50 \"Printing $name"\" \
-    -draw "image over 50,80 56,30 \"$basepath/ETA-logga.png\"" \
+    -draw "image over 50,80 56,30 \"$basepath/assets/ETA-logga.png\"" \
     -draw "text 115,100 \"$kvar_lol\"" \
     -draw "text 50,140 \"(printat i ${time_printing_h}h ${time_printing_m}m, ${time_left_h}h ${time_left_m}m kvar)\"" \
     -draw 'image over 306,160 1307,980 "/tillfälligt/print.png"' \
