@@ -58,5 +58,5 @@ convert -font Courier -size 1920x1080 -background black -fill white canvas:none 
     -draw 'image over 306,160 1307,980 "/tmp/print.png"' \
     "/tmp/rendered.png"
 
-fbi -comments -d /dev/fb0 -vt 1 -1 -t 30 "/tmp/rendered.png"
+sudo fbi -comments -d /dev/fb0 -vt 1 -1 -t 30 "/tmp/rendered.png"
 sleep 30
