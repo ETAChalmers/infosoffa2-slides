@@ -43,7 +43,7 @@ name=$(echo "$job" | jq -r '.file.display_name')
 echo "printing $name for ${time_printing_h}h ${time_printing_m}m, ${time_left_h}h ${time_left_m}m left"
 echo "loading icon"
 icon_url=$(echo "$job" | jq -r '.file.refs.thumbnail')
-curl -u "$LOGIN" --digest -s "$PRINTER_IP$icon_url" > /tmp/print.png
+curl -u "$LOGIN" --digest -s "$PRINTER_IP$icon_url" > /tillfälligt/print.png
 
 echo "rendering image"
 
@@ -55,8 +55,8 @@ convert -font Courier -size 1920x1080 -background black -fill white canvas:none 
     -draw "image over 50,80 56,30 \"$basepath/ETA-logga.png\"" \
     -draw "text 115,100 \"$kvar_lol\"" \
     -draw "text 50,140 \"(printat i ${time_printing_h}h ${time_printing_m}m, ${time_left_h}h ${time_left_m}m kvar)\"" \
-    -draw 'image over 306,160 1307,980 "/tmp/print.png"' \
-    "/tmp/rendered.png"
+    -draw 'image over 306,160 1307,980 "/tillfälligt/print.png"' \
+    "/tillfälligt/rendered.png"
 
-sudo fbi -comments -d /dev/fb0 -vt 1 -1 -t 30 "/tmp/rendered.png"
+sudo fbi -comments -d /dev/fb0 -vt 1 -1 -t 30 "/tillfälligt/rendered.png"
 sleep 30
