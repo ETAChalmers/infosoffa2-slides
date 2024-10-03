@@ -59,3 +59,4 @@ convert -font Courier -size 1920x1080 -background black -fill white canvas:none 
     "/tmp/rendered.png"
 
 fbi -comments -d /dev/fb0 -vt 1 -1 -t 30 "/tmp/rendered.png"
+sleep 30
