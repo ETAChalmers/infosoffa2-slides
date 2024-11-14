@@ -1,0 +1,61 @@
+import requests
+from pprint import pprint
+import termcharts
+import plotext as plt
+import subprocess
+import sys
+
+
+
+data = requests.get("https://www.sosalarm.se/getpagehead?region=1480").json()
+municipalityName = data.get("municipalityName")
+regiondata = data.get("regiondata")
+sos_statistics = data.get("sos-statistics")
+
+vard_calls = sos_statistics.get("careCallCount")
+raddningar = sos_statistics.get("civilRescueCallCount")
+nonemg = sos_statistics.get("noEmergencyCallCount")
+polis_calls = sos_statistics.get("policeCallCount")
+ovrigt = sos_statistics.get("samverkanCallCount") +  sos_statistics.get("vidarekopplingarCallCount") + sos_statistics.get("associeradeCallCount")
+total_calls = sos_statistics.get("totalCallCount")
+
+chart = termcharts.pie({"Totalt: " + str(total_calls):0,'Vård: ' + str(vard_calls):vard_calls, 'Räddningar: '+ str(raddningar): raddningar, 'Skill issue (borde inte ha ringt): ' + str(nonemg): nonemg, "polis_calls: " + str(polis_calls):polis_calls,"ovrigt: " + str(ovrigt):ovrigt },
+                       title='stationary')
+
+size = 1
+new_chart = ""
+for c in chart[100:]:
+    new_chart += c
+    if (c == "█" or c == "█" or c == " " or c == "\t") :
+        new_chart += (c*size)
+newer_chart  = ""
+
+"""for l in new_chart.splitlines():
+    for c in l:
+        new_line = ""
+        if (c == "█" or c == "█" or c == "\n") :
+            new_line += c
+    newer_chart += l + new_line
+    """
+
+
+
+print("""
+
+888     888                                      d8b                                           .d8888b.   .d88888b.   .d8888b.   .d8888b.  
+888     888                                      Y8P                                          d88P  Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 
+888     888                                                                                   Y88b.      888     888 Y88b.           .d88P 
+Y88b   d88P  .d88b.  88888b.d88b.        888d888 888 88888b.   .d88b.   .d88b.  888d888        "Y888b.   888     888  "Y888b.      .d88P"  
+ Y88b d88P  d8P  Y8b 888 "888 "88b       888P"   888 888 "88b d88P"88b d8P  Y8b 888P"             "Y88b. 888     888     "Y88b.    888"    
+  Y88o88P   88888888 888  888  888       888     888 888  888 888  888 88888888 888                 "888 888     888       "888    888     
+   Y888P    Y8b.     888  888  888       888     888 888  888 Y88b 888 Y8b.     888           Y88b  d88P Y88b. .d88P Y88b  d88P            
+    Y8P      "Y8888  888  888  888       888     888 888  888  "Y88888  "Y8888  888            "Y8888P"   "Y88888P"   "Y8888P"     888     
+                                                                   888                                                                     
+                                                              Y8b d88P                                                                     
+                                                               "Y88P"                                                                      
+
+""")
+print(new_chart)
+
+
+
