@@ -29,7 +29,7 @@ for c in chart[100:]:
     if (c == "█" or c == "█" or c == " " or c == "\t") :
         new_chart += (c*size)
 
-new_chart = "\n".join(line.rstrip() for line in new_char.split("\n"))
+new_chart = "\n".join(line.rstrip() for line in new_chart.split("\n"))
 
 newer_chart  = ""
 
