@@ -1,0 +1,6 @@
+pyfiglet
+vcgencmd
+termcharts
+requests
+plotext
+bs4
