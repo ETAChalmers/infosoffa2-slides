@@ -1,0 +1,188 @@
+import requests
+from pprint import pprint
+import termcharts
+import plotext as plt
+import subprocess
+import sys
+import time
+import os
+import json
+from bs4 import BeautifulSoup as bs
+
+
+
+sos_url = "https://www.sosalarm.se/inblick/kommuner/goteborgs-stad/index"
+
+ns_in_hour = 3.6e12
+
+CACHE_FILE = "cache.json"
+
+def parseKey(css_selection):
+    target = str(css_selection).split("</button>")[1]
+    target = target.strip()
+    target = target.split("\r\n")[0]
+    return target
+
+
+def scrapeKeys(mySoup):
+    key_list = []
+    for i in range(2,8):
+        selector = f"tbody.inbTable-tbody:nth-child(2) > tr:nth-child({i}) > th:nth-child(1)"
+        css = mySoup.css.select(selector)
+        new_key = parseKey(css)
+        key_list.append(new_key)
+    return key_list
+
+def scrapeValues(mySoup):
+    values_list = []
+    for i in range(2,8):
+        selector = f"tbody.inbTable-tbody:nth-child(2) > tr:nth-child({i}) > td:nth-child(2)"
+        css = mySoup.css.select(selector)
+        new_value = str(css).split("\n")[1]
+
+        new_value = new_value.strip()
+
+        values_list.append(new_value)
+    return values_list
+
+def hours_since_last_scrape():
+    t_scrape = 0
+    ns_to_hours = lambda x : x/(3.6e12)
+    hours_to_seconds = lambda x : x*3600
+    with open(".timecache", mode='r', encoding='utf-8') as timecache:
+        t_scrape=timecache.read()
+        print("read time:",t_scrape)
+        t_scrape = int(t_scrape)
+        print(t_scrape)
+    t_now = time.time_ns()
+    diff = t_now-t_scrape
+    diff = ns_to_hours(diff)
+    print("seconds since last scrape: ",hours_to_seconds(diff))
+    return diff
+
+def log_time():
+    with open(".timecache", mode='w', encoding='utf-8') as timecache:
+        timecache.write(str(time.time_ns()))
+
+def cache(jsondata):
+    with open(CACHE_FILE, mode='w', encoding='utf-8') as htmlcache:
+        htmlcache.write(json.dumps(jsondata, indent=4, ensure_ascii=False))
+        log_time()
+
+def build_sos_stats(data):
+    soup=bs(data, "html.parser")
+
+    key_list=scrapeKeys(soup)
+
+    value_list=scrapeValues(soup)
+
+    sos_stats={}
+
+    for key in key_list:
+
+        i = key_list.index(key)
+
+        value = int(value_list[i])
+
+        sos_stats[key] = value
+
+    return sos_stats
+
+#Only this function should actually ever make a request
+def get_data():
+    data = requests.get(sos_url).text
+    log_time()
+    data = build_sos_stats(data)
+    cache(data)
+    return data
+
+def get_cache():
+    cache_data=""
+    with open(CACHE_FILE, mode='r', encoding='utf-8') as htmlcache:
+        cache_data = json.load(htmlcache)
+    return cache_data
+
+
+def sos_info():
+    data=""
+
+    if not os.path.isfile(".timecache"):
+        print("Time since last scrape not found, requesting")
+        data = get_data()
+
+    elif not os.path.isfile(CACHE_FILE):
+        print("Html cache not found, requesting")
+        data = get_data()
+
+    else:
+        print("Html cache found")
+
+        if hours_since_last_scrape() < 24: # Data only updates every 24h
+            print("Using html cache")
+            data = get_cache()
+
+        else:
+            data = get_data()
+
+    sos_stats = data
+
+    return sos_stats
+
+
+
+sos_stats = sos_info()
+
+total_calls = sos_stats["Alla samtal"]
+vard_calls = sos_stats["Vårdbehov"]
+raddningar = sos_stats["Räddning"]
+nonemg = sos_stats["Ej akuta behov"]
+polis_calls = sos_stats["Polisen"]
+ovrigt = total_calls - (vard_calls+raddningar+nonemg+polis_calls)
+
+
+chart = termcharts.pie({"Totalt: " + str(total_calls):0,
+                        'Vård: ' + str(vard_calls):vard_calls,
+                        'Räddningar: '+ str(raddningar): raddningar,
+                        'Ej akut(skill issue): ' + str(nonemg): nonemg,
+                        "Till Polisen: " + str(polis_calls):polis_calls,"Övrigt: " + str(ovrigt):ovrigt },title='stationary')
+
+size = 1
+new_chart = ""
+for c in chart[100:]:
+    new_chart += c
+    if (c == "█" or c == "█" or c == " " or c == "\t") :
+        new_chart += (c*size)
+
+new_chart = "\n".join(line.rstrip() for line in new_chart.split("\n"))
+
+newer_chart  = ""
+
+"""for l in new_chart.splitlines():
+    for c in l:
+        new_line = ""
+        if (c == "█" or c == "█" or c == "\n") :
+            new_line += c
+    newer_chart += l + new_line
+    """
+
+
+
+print("""
+
+888     888                                      d8b                                           .d8888b.   .d88888b.   .d8888b.   .d8888b.  
+888     888                                      Y8P                                          d88P  Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 
+888     888                                                                                   Y88b.      888     888 Y88b.           .d88P 
+Y88b   d88P  .d88b.  88888b.d88b.        888d888 888 88888b.   .d88b.   .d88b.  888d888        "Y888b.   888     888  "Y888b.      .d88P"  
+ Y88b d88P  d8P  Y8b 888 "888 "88b       888P"   888 888 "88b d88P"88b d8P  Y8b 888P"             "Y88b. 888     888     "Y88b.    888"    
+  Y88o88P   88888888 888  888  888       888     888 888  888 888  888 88888888 888                 "888 888     888       "888    888     
+   Y888P    Y8b.     888  888  888       888     888 888  888 Y88b 888 Y8b.     888           Y88b  d88P Y88b. .d88P Y88b  d88P            
+    Y8P      "Y8888  888  888  888       888     888 888  888  "Y88888  "Y8888  888            "Y8888P"   "Y88888P"   "Y8888P"     888     
+                                                                   888                                                                     
+                                                              Y8b d88P                                                                     
+                                                               "Y88P"                                                                      
+
+""")
+print(new_chart)
+
+
+
